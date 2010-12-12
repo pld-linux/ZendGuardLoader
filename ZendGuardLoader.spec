@@ -51,35 +51,33 @@ Zend Guard dla PHP 5.x.
 %{__tar} --strip-components=1 -zxf %{SOURCE1}
 %endif
 
-cat <<'EOF' > zendguard.ini
-; ZendGuard user settings.
+cat <<'EOF' > zendguardloader.ini
+; ZendGuardLoader user settings.
 [Zend]
-zend_guard.optimization_level=15
+zend_loader.enable=1
+;zend_loader.disable_licensing=0
+;zend_loader.obfuscation_level_support=3
+;zend_loader.license_path=
 EOF
 
-cat <<'EOF' > pack.ini
-; ZendGuard package settings. Overwritten with each upgrade.
+cat <<'EOF' > zendguardloaderpack.ini
+; ZendGuardLoader package settings. Overwritten with each upgrade.
 ; if you need to add options, edit %{name}.ini instead
 [Zend]
 zend_guard.version=%{version}
-zend_extension_manager.guard=%{_libdir}/Zend/lib/Guard-%{version}
-zend_extension_manager.guard_ts=%{_libdir}/Zend/lib/Guard_TS-%{version}
 zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so
-zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so
 EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/php}
 
-install -D php-*/ZendGuardLoader.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Guard-%{version}/php-$d/ZendGuardLoader.so
-
+install -D php-*/ZendGuardLoader.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/GuardLoader-%{version}/php-$d/ZendGuardLoader.so
 ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend%{_sysconfdir}
-ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d
-install zendguard.ini $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d/zendguard.ini
-install pack.ini $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d/zendguard_pack.ini
+install zendguardloader.ini $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d/zendguardloader.ini
+install zendguardloaderpack.ini $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d/zendguardloader_pack.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -97,40 +95,24 @@ ln -snf %{_sysconfdir}/php %{_libdir}/Zend%{_sysconfdir}
 fi
 %php_webserver_restart
 
-%post
-if [ "$1" = 1 ]; then
-%banner -e %{name} <<EOF
-Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
-EOF
-fi
-
-%triggerpostun -- %{name} < 2.5.10a-0.20
-if [ -f /etc/php/php.ini ]; then
-	cp -f /etc/php/conf.d/ZendGuard.ini{,.rpmnew}
-	sed -ne '/^\(zend_\|\[Zend\]\)/{/^zend_extension\(_manager\.guard\)\?\(_ts\)\?=/d;p}' /etc/php/php.ini > /etc/php/conf.d/ZendGuard.ini
-	cp -f /etc/php/php.ini{,.rpmsave}
-	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php/php.ini
-fi
+#%post
+#if [ "$1" = 1 ]; then
+#%banner -e %{name} <<EOF
+#Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
+#EOF
+#fi
 
 %files
 %defattr(644,root,root,755)
-%doc data/doc/* LICENSE
-%attr(755,root,root) %{_bindir}/zendid
+%doc README.txt
 %dir %{_libdir}/Zend
 %dir %{_libdir}/Zend/lib
-%dir %{_libdir}/Zend/lib/Guard-%{version}
-%dir %{_libdir}/Zend/lib/Guard-%{version}/php-*
-%dir %{_libdir}/Zend/lib/Guard_TS-%{version}
-%dir %{_libdir}/Zend/lib/Guard_TS-%{version}/php-*
-%attr(755,root,root) %{_libdir}/Zend/lib/Guard-%{version}/php-*/ZendGuard.so
-%attr(755,root,root) %{_libdir}/Zend/lib/Guard_TS-%{version}/php-*/ZendGuard.so
-%attr(755,root,root) %{_libdir}/Zend/lib/ZendExtensionManager.so
-%attr(755,root,root) %{_libdir}/Zend/lib/ZendExtensionManager_TS.so
-%{_libdir}/Zend/bin
+%dir %{_libdir}/Zend/lib/GuardLoader-%{version}
+%dir %{_libdir}/Zend/lib/GuardLoader-%{version}/php-*
+%attr(755,root,root) %{_libdir}/Zend/lib/GuardLoader-%{version}/php-*/ZendGuardLoader.so
 %ghost %{_libdir}/Zend%{_sysconfdir}
 
 %files -n php-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/php/conf.d/zendguard.ini
-%config %verify(not md5 mtime size) %{_sysconfdir}/php/conf.d/zendguard_pack.ini
-%{_sysconfdir}/php/poweredbyguard.gif
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/php/conf.d/zendguardloader.ini
+%config %verify(not md5 mtime size) %{_sysconfdir}/php/conf.d/zendguardloader_pack.ini
