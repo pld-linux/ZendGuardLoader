@@ -8,7 +8,7 @@ Summary:	Zend Guard - PHP code guard
 Summary(pl.UTF-8):	Zend Guard - optymalizator kodu PHP
 Name:		ZendGuardLoader
 Version:	5.5.0
-Release:	0.1
+Release:	1
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/guard/5.5.0/%{name}-php-5.3-linux-glibc23-i386.tar.gz
@@ -65,14 +65,17 @@ cat <<'EOF' > zendguardloaderpack.ini
 ; if you need to add options, edit %{name}.ini instead
 [Zend]
 zend_guard.version=%{version}
-zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so
+zend_extension=%{_libdir}/Zend/lib/GuardLoader-%{version}/php-5.3.x/ZendGuardLoader.so
 EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/php}
 
-install -D php-*/ZendGuardLoader.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/GuardLoader-%{version}/php-$d/ZendGuardLoader.so
+for d in php-*; do
+	install -D $d/ZendGuardLoader.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/GuardLoader-%{version}/$d/ZendGuardLoader.so
+done
+
 ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend%{_sysconfdir}
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d
@@ -95,9 +98,9 @@ ln -snf %{_sysconfdir}/php %{_libdir}/Zend%{_sysconfdir}
 fi
 %php_webserver_restart
 
-#%post
+#%%post
 #if [ "$1" = 1 ]; then
-#%banner -e %{name} <<EOF
+#%%banner -e %{name} <<EOF
 #Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
 #EOF
 #fi
