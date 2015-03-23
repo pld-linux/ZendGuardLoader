@@ -19,6 +19,7 @@ Source1:	http://downloads.zend.com/guard/6.0.0/%{name}-70429-PHP-5.4-linux-glibc
 URL:		http://www.zend.com/products/zend_guard
 BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	tar >= 1:1.15.1
+BuildRequires:	php%{?php_suffix}-devel >= 4:5.4
 Requires(triggerpostun):	sed >= 4.0
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
