@@ -18,8 +18,8 @@ Source1:	http://downloads.zend.com/guard/5.5.0/%{name}-php-5.3-linux-glibc23-x86
 URL:		http://www.zend.com/products/zend_guard
 BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	tar >= 1:1.15.1
-BuildRequires:	php%{?php_suffix}-common >= 4:5.3
-BuildRequires:	php%{?php_suffix}-common < 4:5.4
+BuildRequires:	php%{?php_suffix}-devel >= 4:5.3
+BuildRequires:	php%{?php_suffix}-devel < 4:5.4
 Requires(triggerpostun):	sed >= 4.0
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
