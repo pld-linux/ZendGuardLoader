@@ -20,9 +20,11 @@ BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	tar >= 1:1.15.1
 BuildRequires:	php%{?php_suffix}-devel >= 4:5.3
 BuildRequires:	php%{?php_suffix}-devel < 4:5.4
-Requires(triggerpostun):	sed >= 4.0
+Requires(postun):	sed >= 4.0
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%undefine   _debugsource_packages
 
 %description
 Zend Guard - PHP code guard.
