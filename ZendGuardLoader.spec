@@ -4,11 +4,12 @@
 %define		no_install_post_strip		1
 %define		no_install_post_compress_docs	1
 %define		no_install_post_chrpath		1
+%define		_enable_debug_packages		0
 Summary:	Zend Guard - PHP code guard
 Summary(pl.UTF-8):	Zend Guard - optymalizator kodu PHP
 Name:		ZendGuardLoader
 Version:	5.5.0
-Release:	1
+Release:	2
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/guard/5.5.0/%{name}-php-5.3-linux-glibc23-i386.tar.gz
